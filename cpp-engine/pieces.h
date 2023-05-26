@@ -3,7 +3,6 @@
 namespace Pieces{
 	class Piece{
 		public:
-		int pieceType;
 			int file;
 			int color;
 			int pieceValue;
@@ -62,5 +61,13 @@ namespace Pieces{
 			int rank;
 			int color;
 			const static int pieceValue = 0;
+	};
+	class EmpySquare{
+		EmptySquare(int rank, int file);
+		int rank;
+		int file;
+		const static int pieceType = -1;
+		const static int color = -1;
+		const static int pieceValue = 0;
 	};
 }
