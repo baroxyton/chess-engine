@@ -6,11 +6,14 @@ namespace Pieces{
 		int pieceType;
 			int file;
 			int color;
+			int pieceValue;
+			int pieceType;
 	};
 	class Pawn : Piece{
 		public:
 			Pawn(int rank, int file, int color);
 			const static int pieceType = 0;
+			const static int pieceValue = 1;
 			int file;
 			int rank;
 			int color;
@@ -22,6 +25,7 @@ namespace Pieces{
 			int file;
 			int rank;
 			int color;
+			const static int pieceValue = 3.1;
 	}; 
 	class Knight : Piece{
 		public:
@@ -30,6 +34,7 @@ namespace Pieces{
 			int file;
 			int rank;
 			int color;
+			const static int pieceValue = 3;
 	}; 
 	class Rook : Piece{
 		public:
@@ -38,6 +43,7 @@ namespace Pieces{
 			int file;
 			int rank;
 			int color;
+			const static int pieceValue = 5;
 	};
 	class Queen : Piece{
 		public:
@@ -46,6 +52,7 @@ namespace Pieces{
 			int file;
 			int rank;
 			int color;
+			const static int pieceValue = 9;
 	};
 	class King : Piece{
 		public:
@@ -54,5 +61,6 @@ namespace Pieces{
 			int file;
 			int rank;
 			int color;
+			const static int pieceValue = 0;
 	};
 }
