@@ -1,11 +1,16 @@
 #include "pieces.h"
 namespace Pieces{
-		Pawn::Pawn(int rank, int file, int color) : rank(rank), file(file), color(color){};
+		Pawn::Pawn(int color) :  color(color){};
 
-		Knight::Knight(int rank, int file, int color) : rank(rank), file(file), color(color){};
+		Knight::Knight(int color) : color(color){};
 		
-		Bishop::Bishop(int rank, int file, int color) : rank(rank), file(file), color(color){};
+		Bishop::Bishop(int color) :  color(color){};
 
-		EmptyPiece::EmptyPiece(int rank, int file) : rank(rank, file(file){};
+		Rook::Rook(int color) : color(color){};
+
+		Queen::Queen(int color) : color(color){};
+		
+		King::King(int color) : color(color){};
+
+		EmptySquare::EmptySquare(){};
 }
-int main(){}
