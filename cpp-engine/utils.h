@@ -1,7 +1,7 @@
 #pragma once
 #include "pieces.h"
-#include <strings>
+#include <string>
 
 namespace Utils{
-	Pieces::Piece letterToPiece(std::string letter);
+	Pieces::Piece* letterToPiece(std::string letter);
 };
