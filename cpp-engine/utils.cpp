@@ -3,16 +3,17 @@
 #include <iostream>
 #include <string>
 #include <boost/algorithm/string.hpp>
+#include <algorithm>
 namespace Utils
 {
-	Pieces::Piece* letterToPiece(std::string letter)
+	Pieces::Piece *letterToPiece(std::string letter)
 	{
-		int color = 1;
+		int color = COLOR_WHITE;
 		std::string lowerLetter = letter;
 		boost::algorithm::to_lower(lowerLetter);
 		if (lowerLetter == letter)
 		{
-			color = 0;
+			color = COLOR_BLACK;
 		}
 		if (lowerLetter == "p")
 		{
@@ -62,7 +63,7 @@ namespace Utils
 		std::vector<std::string> splitFen;
 		boost::split(splitFen, fen, boost::is_any_of(" "));
 
-		std::vector<std::vector<Pieces::Piece*>> boardPosition;
+		std::vector<std::vector<Pieces::Piece *>> boardPosition;
 		int whoseTurn;
 		std::vector<int> availableCastles = std::vector<int>{0, 0, 0, 0};
 
@@ -78,7 +79,8 @@ namespace Utils
 				{
 					for (int j = 0; j < atoi((std::string{letter}).c_str()); j++)
 					{
-						rank.push_back((Pieces::Piece *)new Pieces::EmptySquare());					}
+						rank.push_back((Pieces::Piece *)new Pieces::EmptySquare());
+					}
 				}
 				else
 				{
@@ -87,6 +89,8 @@ namespace Utils
 			}
 			boardPosition.push_back(rank);
 		}
+		std::reverse(boardPosition.begin(), boardPosition.end());
+
 		if (splitFen.size() < 3)
 		{
 			splitFen[2] = "";
@@ -132,13 +136,13 @@ namespace Utils
 			enpassantSquare = "-";
 		}
 
-
 		result.boardContent = boardPosition;
 		if (splitFen[3].size() == 2)
 		{
 			result.enpassantSquare = fileAndRank(enpassantSquare);
 		}
-		else{
+		else
+		{
 			result.enpassantSquare = std::vector<int>{};
 		}
 		result.legalCastles = availableCastles;
@@ -147,4 +151,11 @@ namespace Utils
 		return result;
 	}
 
+	std::string squareToStr(std::vector<int> square){
+		std::string result;
+		std::string file = (std::vector<std::string>{"a", "b", "c", "d", "e", "f", "g", "h"})[square[0]];
+		int rank = square[1]+1;
+
+		return file + std::to_string(rank);
+	}
 }

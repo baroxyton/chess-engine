@@ -1,4 +1,16 @@
 #pragma once
+#define COLOR_NONE -1
+#define COLOR_WHITE 0
+#define COLOR_BLACK 1
+
+#define PIECE_NONE -1
+#define PIECE_PAWN 0
+#define PIECE_KNIGHT 1
+#define PIECE_BISHOP 2
+#define PIECE_ROOK 3
+#define PIECE_QUEEN 4
+#define PIECE_KING 5
+
 #include <string>
 namespace Pieces{
 	class Piece{

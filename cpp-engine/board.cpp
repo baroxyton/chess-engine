@@ -5,6 +5,7 @@
 #include "utils.h"
 #include <iostream>
 #include <boost/algorithm/string.hpp>
+#include "moveGenerator.h"
 
 Board::Board(std::string fen)
 {
@@ -16,8 +17,12 @@ Board::Board(std::string fen)
 	numRepetitions = parsedBoard.numRepetitions;
 	toPlay = parsedBoard.toPlay;
 
-};
+	auto valid_moves = MoveGenerator::pseudolegalMoveGenerator(boardContent);
+	for(auto move : valid_moves){
+		std::cout << Utils::squareToStr(move[0]) << " TO " << Utils::squareToStr(move[1]) << std::endl;
+	}
 
+};
 Board::Board() : Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1") {}
 int main()
 {

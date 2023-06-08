@@ -17,4 +17,5 @@ namespace Utils
 	Pieces::Piece *letterToPiece(std::string letter);
 	parsedBoard parseFEN(std::string fen);
 	std::vector<int> fileAndRank(std::string square);
+	std::string squareToStr(std::vector<int> square);
 };
