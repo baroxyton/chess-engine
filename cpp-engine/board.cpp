@@ -23,7 +23,7 @@ Board::Board(std::string fen)
 	}
 
 };
-Board::Board() : Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1") {}
+Board::Board() : Board("rnb1kbnr/pp2pppp/8/2pq4/6P1/8/PPPPPP1P/R1BQKBNR b KQkq - 0 4") {}
 int main()
 {
 	Board();

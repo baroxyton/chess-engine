@@ -20,7 +20,8 @@ namespace MoveGenerator
                     continue;
                 }
                 auto pieceColor = piece->color;
-                if(pieceColor != turn){
+                if (pieceColor != turn)
+                {
                     continue;
                 }
                 // Pawn
@@ -50,12 +51,12 @@ namespace MoveGenerator
                     // Capture diagonally
                     if (j != 0 && board[i + direction][j - 1]->color != COLOR_NONE && board[i + direction][j - 1]->color != pieceColor)
                     {
-                        result.push_back(std::vector<std::vector<int>>{std::vector<int>{i, j}, std::vector<int>{i + direction, j - 1, promotion}});
+                        result.push_back(std::vector<std::vector<int>>{std::vector<int>{i, j}, std::vector<int>{j - 1, i + direction, promotion}});
                     }
 
                     if (j != 7 && board[i + direction][j + 1]->color != COLOR_NONE && board[i + direction][j + 1]->color != pieceColor)
                     {
-                        result.push_back(std::vector<std::vector<int>>{std::vector<int>{i, j}, std::vector<int>{i + direction, j + 1, promotion}});
+                        result.push_back(std::vector<std::vector<int>>{std::vector<int>{i, j}, std::vector<int>{j + 1, i + direction, promotion}});
                     }
                 }
 
@@ -82,107 +83,107 @@ namespace MoveGenerator
                                 std::vector<int>{y, x, 0}});
                         }
                     }
-                    // Bishop
-                    if (piece->pieceType == PIECE_BISHOP)
+                }
+                // Bishop
+                if (piece->pieceType == PIECE_BISHOP)
+                {
+                    std::vector<std::pair<int, int>> bishopDirections = {
+                        {1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
+
+                    for (const auto &direction : bishopDirections)
                     {
-                        std::vector<std::pair<int, int>> bishopDirections = {
-                            {1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
+                        int dx = direction.first;
+                        int dy = direction.second;
+                        int x = i + dx;
+                        int y = j + dy;
 
-                        for (const auto &direction : bishopDirections)
+                        while (x >= 0 && x < 8 && y >= 0 && y < 8)
                         {
-                            int dx = direction.first;
-                            int dy = direction.second;
-                            int x = i + dx;
-                            int y = j + dy;
-
-                            while (x >= 0 && x < 8 && y >= 0 && y < 8)
+                            if (board[x][y]->color == pieceColor)
                             {
-                                if (board[x][y]->color == pieceColor)
-                                {
-                                    break; // Stop if the target square contains a friendly piece
-                                }
-
-                                result.push_back(std::vector<std::vector<int>>{
-                                    std::vector<int>{j, i},
-                                    std::vector<int>{y, x, 0}});
-
-                                if (board[x][y]->color != COLOR_NONE)
-                                {
-                                    break; // Stop if the target square contains an opponent's piece
-                                }
-
-                                x += dx;
-                                y += dy;
+                                break; // Stop if the target square contains a friendly piece
                             }
+
+                            result.push_back(std::vector<std::vector<int>>{
+                                std::vector<int>{j, i},
+                                std::vector<int>{y, x, 0}});
+
+                            if (board[x][y]->color != COLOR_NONE)
+                            {
+                                break; // Stop if the target square contains an opponent's piece
+                            }
+
+                            x += dx;
+                            y += dy;
                         }
                     }
-                    // Rook
-                    if (piece->pieceType == PIECE_ROOK)
+                }
+                // Rook
+                if (piece->pieceType == PIECE_ROOK)
+                {
+                    std::vector<std::pair<int, int>> rookDirections = {
+                        {1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+
+                    for (const auto &direction : rookDirections)
                     {
-                        std::vector<std::pair<int, int>> rookDirections = {
-                            {1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+                        int dx = direction.first;
+                        int dy = direction.second;
+                        int x = i + dx;
+                        int y = j + dy;
 
-                        for (const auto &direction : rookDirections)
+                        while (x >= 0 && x < 8 && y >= 0 && y < 8)
                         {
-                            int dx = direction.first;
-                            int dy = direction.second;
-                            int x = i + dx;
-                            int y = j + dy;
-
-                            while (x >= 0 && x < 8 && y >= 0 && y < 8)
+                            if (board[x][y]->color == pieceColor)
                             {
-                                if (board[x][y]->color == pieceColor)
-                                {
-                                    break; // Stop if the target square contains a friendly piece
-                                }
-
-                                result.push_back(std::vector<std::vector<int>>{
-                                    std::vector<int>{j, i},
-                                    std::vector<int>{y, x, 0}});
-
-                                if (board[x][y]->color != COLOR_NONE)
-                                {
-                                    break; // Stop if the target square contains an opponent's piece
-                                }
-
-                                x += dx;
-                                y += dy;
+                                break; // Stop if the target square contains a friendly piece
                             }
-                            // Queen
-                            if (piece->pieceType == PIECE_QUEEN)
+
+                            result.push_back(std::vector<std::vector<int>>{
+                                std::vector<int>{j, i},
+                                std::vector<int>{y, x, 0}});
+
+                            if (board[x][y]->color != COLOR_NONE)
                             {
-                                std::vector<std::pair<int, int>> queenDirections = {
-                                    {1, 0}, {-1, 0}, {0, 1}, {0, -1}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
-
-                                for (const auto &direction : queenDirections)
-                                {
-                                    int dx = direction.first;
-                                    int dy = direction.second;
-                                    int x = i + dx;
-                                    int y = j + dy;
-
-                                    while (x >= 0 && x < 8 && y >= 0 && y < 8)
-                                    {
-                                        if (board[x][y]->color == pieceColor)
-                                        {
-                                            break; // Stop if the target square contains a friendly piece
-                                        }
-
-                                        result.push_back(std::vector<std::vector<int>>{
-                                            std::vector<int>{j, i},
-                                            std::vector<int>{y, x, 0}});
-
-                                        if (board[x][y]->color != COLOR_NONE)
-                                        {
-                                            break; // Stop if the target square contains an opponent's piece
-                                        }
-
-                                        x += dx;
-                                        y += dy;
-                                    }
-                                }
+                                break; // Stop if the target square contains an opponent's piece
                             }
-                                                }
+
+                            x += dx;
+                            y += dy;
+                        }
+                    }
+                }
+                // Queen
+                if (piece->pieceType == PIECE_QUEEN)
+                {
+                    std::vector<std::pair<int, int>> queenDirections = {
+                        {1, 0}, {-1, 0}, {0, 1}, {0, -1}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
+
+                    for (const auto &direction : queenDirections)
+                    {
+                        int dx = direction.first;
+                        int dy = direction.second;
+                        int x = i + dx;
+                        int y = j + dy;
+
+                        while (x >= 0 && x < 8 && y >= 0 && y < 8)
+                        {
+                            if (board[x][y]->color == pieceColor)
+                            {
+                                break; // Stop if the target square contains a friendly piece
+                            }
+
+                            result.push_back(std::vector<std::vector<int>>{
+                                std::vector<int>{j, i},
+                                std::vector<int>{y, x, 0}});
+
+                            if (board[x][y]->color != COLOR_NONE)
+                            {
+                                break; // Stop if the target square contains an opponent's piece
+                            }
+
+                            x += dx;
+                            y += dy;
+                        }
                     }
                 }
             }
