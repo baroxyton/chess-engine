@@ -20,7 +20,9 @@ namespace MoveGenerator
                     continue;
                 }
                 auto pieceColor = piece->color;
-                // Pawn
+                if(pieceColor != turn){
+                    continue;
+                }
                 // Pawn
                 if (piece->pieceType == PIECE_PAWN)
                 {
