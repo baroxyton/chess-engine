@@ -17,7 +17,7 @@ Board::Board(std::string fen)
 	numRepetitions = parsedBoard.numRepetitions;
 	toPlay = parsedBoard.toPlay;
 
-	auto valid_moves = MoveGenerator::pseudolegalMoveGenerator(boardContent);
+	auto valid_moves = MoveGenerator::pseudolegalMoveGenerator(boardContent, legalCastles, enpassantSquare, toPlay);
 	for(auto move : valid_moves){
 		std::cout << Utils::squareToStr(move[0]) << " TO " << Utils::squareToStr(move[1]) << std::endl;
 	}

@@ -120,11 +120,11 @@ namespace Utils
 		}
 		if (splitFen[1] == "w")
 		{
-			whoseTurn = 0;
+			whoseTurn = COLOR_WHITE;
 		}
 		else
 		{
-			whoseTurn = 1;
+			whoseTurn = COLOR_BLACK;
 		}
 		if (splitFen.size() < 4)
 		{

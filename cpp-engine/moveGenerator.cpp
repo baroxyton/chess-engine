@@ -4,7 +4,7 @@
 namespace MoveGenerator
 {
     // list[rank, file, (promotion)]
-    std::vector<std::vector<std::vector<int>>> pseudolegalMoveGenerator(std::vector<std::vector<Pieces::Piece *>> &board)
+    std::vector<std::vector<std::vector<int>>> pseudolegalMoveGenerator(std::vector<std::vector<Pieces::Piece *>> &board, std::vector<int> legalCastles, std::vector<int> enpassantSquare, int turn)
     {
         std::vector<std::vector<std::vector<int>>> result;
         // Loop through ranks
@@ -36,12 +36,12 @@ namespace MoveGenerator
                     // Single move forward
                     if (board[i + direction][j]->pieceType == PIECE_NONE)
                     {
-                        result.push_back(std::vector<std::vector<int>>{std::vector<int>{i, j}, std::vector<int>{i + direction, j, promotion}});
+                        result.push_back(std::vector<std::vector<int>>{std::vector<int>{j, i}, std::vector<int>{j, i + direction, promotion}});
 
                         // Double move from starting position
                         if (doubleMove && board[i + 2 * direction][j]->pieceType == PIECE_NONE)
                         {
-                            result.push_back(std::vector<std::vector<int>>{std::vector<int>{i, j}, std::vector<int>{i + 2 * direction, j, promotion}});
+                            result.push_back(std::vector<std::vector<int>>{std::vector<int>{j, i}, std::vector<int>{j, i + 2 * direction, promotion}});
                         }
                     }
 
@@ -76,8 +76,8 @@ namespace MoveGenerator
                             }
 
                             result.push_back(std::vector<std::vector<int>>{
-                                std::vector<int>{i, j},
-                                std::vector<int>{x, y, 0}});
+                                std::vector<int>{j, i},
+                                std::vector<int>{y, x, 0}});
                         }
                     }
                     // Bishop
@@ -101,8 +101,8 @@ namespace MoveGenerator
                                 }
 
                                 result.push_back(std::vector<std::vector<int>>{
-                                    std::vector<int>{i, j},
-                                    std::vector<int>{x, y, 0}});
+                                    std::vector<int>{j, i},
+                                    std::vector<int>{y, x, 0}});
 
                                 if (board[x][y]->color != COLOR_NONE)
                                 {
@@ -135,8 +135,8 @@ namespace MoveGenerator
                                 }
 
                                 result.push_back(std::vector<std::vector<int>>{
-                                    std::vector<int>{i, j},
-                                    std::vector<int>{x, y, 0}});
+                                    std::vector<int>{j, i},
+                                    std::vector<int>{y, x, 0}});
 
                                 if (board[x][y]->color != COLOR_NONE)
                                 {
@@ -167,8 +167,8 @@ namespace MoveGenerator
                                         }
 
                                         result.push_back(std::vector<std::vector<int>>{
-                                            std::vector<int>{i, j},
-                                            std::vector<int>{x, y, 0}});
+                                            std::vector<int>{j, i},
+                                            std::vector<int>{y, x, 0}});
 
                                         if (board[x][y]->color != COLOR_NONE)
                                         {
