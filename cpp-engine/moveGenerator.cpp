@@ -294,6 +294,22 @@ namespace MoveGenerator
                     }
                 }
             }
+            else
+            {
+                auto boardCopy = board;
+                boardCopy[move[1][1]][move[1][0]] = boardCopy[move[0][1]][move[0][0]];
+                boardCopy[move[0][1]][move[0][0]] = new Pieces::EmptySquare{};
+                auto movesOpponent = pseudolegalMoveGenerator(boardCopy, legalCastles, enpassantSquare, otherTurn);
+                for (auto opponentMove : movesOpponent)
+                {
+                    if (opponentMove[1][0] == kingPosition[0] && opponentMove[1][1] == kingPosition[1])
+                    {
+                        isLegal = false;
+                        break;
+                    }
+                }
+            }
+
             if (isLegal)
             {
                 result.push_back(move);
