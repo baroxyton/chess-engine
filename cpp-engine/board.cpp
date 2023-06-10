@@ -17,13 +17,14 @@ Board::Board(std::string fen)
 	numRepetitions = parsedBoard.numRepetitions;
 	toPlay = parsedBoard.toPlay;
 
-	auto valid_moves = MoveGenerator::pseudolegalMoveGenerator(boardContent, legalCastles, enpassantSquare, toPlay);
+	auto valid_moves = MoveGenerator::legalMoveGenerator(boardContent, legalCastles, enpassantSquare, toPlay);
+	std::cout << "NUM LEGAL MOVES: " << valid_moves.size() << std::endl;
 	for(auto move : valid_moves){
 		std::cout << Utils::squareToStr(move[0]) << " TO " << Utils::squareToStr(move[1]) << std::endl;
 	}
 
 };
-Board::Board() : Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RN2K2R w KQkq - 0 1") {}
+Board::Board() : Board("1nbrkbnr/pb2pppp/3p1q2/8/8/8/PPP1P1PP/R3K2R b KQk - 0 1") {}
 int main()
 {
 	Board();
