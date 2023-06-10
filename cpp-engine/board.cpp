@@ -17,11 +17,11 @@ Board::Board(std::string fen)
 	numRepetitions = parsedBoard.numRepetitions;
 	toPlay = parsedBoard.toPlay;
 	auto valid_moves = MoveGenerator::legalMoveGenerator(boardContent, legalCastles, enpassantSquare, toPlay);
-	// Current performance: ~5000 moves per second (legal move, start position)
-	// ~200'000 moves per second (pseudo-legal move)
+	// Current performance: ~8500 moves per second (legal move, start position)
+	// ~200'000 moves per second (pseudo-legal move, start position)
 	for (int i = 0; i < 100000; i++)
 	{
-		valid_moves = MoveGenerator::pseudolegalMoveGenerator(boardContent, legalCastles, enpassantSquare, toPlay);
+		valid_moves = MoveGenerator::legalMoveGenerator(boardContent, legalCastles, enpassantSquare, toPlay);
 	}
 	std::cout << "NUM LEGAL MOVES: " << valid_moves.size() << std::endl;
 	for (auto move : valid_moves)

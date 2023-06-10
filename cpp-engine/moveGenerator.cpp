@@ -4,7 +4,7 @@
 namespace MoveGenerator
 {
     // list[rank, file, (promotion)]
-    std::vector<std::vector<std::vector<int>>> pseudolegalMoveGenerator(std::vector<std::vector<char>> &board, std::vector<int> legalCastles, std::vector<int> enpassantSquare, int turn)
+    std::vector<std::vector<std::vector<int>>> pseudolegalMoveGenerator(std::vector<std::vector<char>>& board, std::vector<int> legalCastles, std::vector<int> enpassantSquare, int turn, bool rangePiecesOnly=false)
     {
         std::vector<std::vector<std::vector<int>>> result;
         // Loop through ranks
@@ -15,7 +15,7 @@ namespace MoveGenerator
             {
                 auto piece = board[i][j];
                 // Empty square
-                if (Pieces::getType(piece) == PIECE_NONE)
+                if (Pieces::getType(piece) == PIECE_NONE||(rangePiecesOnly && (Pieces::getType(piece) < PIECE_BISHOP || Pieces::getType(piece) == PIECE_KING)))
                 {
                     continue;
                 }
@@ -235,87 +235,101 @@ namespace MoveGenerator
         return result;
     }
     // Filter illegal moves that allow the capture of the king
-    std::vector<std::vector<std::vector<int>>> legalMoveGenerator(std::vector<std::vector<char>> board, std::vector<int> legalCastles, std::vector<int> enpassantSquare, int turn)
+    std::vector<std::vector<std::vector<int>>> legalMoveGenerator(const std::vector<std::vector<char>>& board, const std::vector<int>& legalCastles, const std::vector<int>& enpassantSquare, int turn)
+{   std::vector<std::vector<char>> boardCopy = board;
+    std::vector<std::vector<std::vector<int>>> result;
+    const auto& pseudolegalMoves = pseudolegalMoveGenerator(boardCopy, legalCastles, enpassantSquare, turn);
+    const int otherTurn = (turn == COLOR_WHITE) ? COLOR_BLACK : COLOR_WHITE;
+    std::vector<int> kingPosition;
+    
+    for (int i = 0; i < 8; i++)
     {
-        std::vector<std::vector<std::vector<int>>> result;
-        auto pseudolegalMoves = pseudolegalMoveGenerator(board, legalCastles, enpassantSquare, turn);
-        int otherTurn = (turn == COLOR_WHITE) ? COLOR_BLACK : COLOR_WHITE;
-        std::vector<int> kingPosition;
-        for (int i = 0; i < 8; i++)
+        for (int j = 0; j < 8; j++)
         {
-            for (int j = 0; j < 8; j++)
+            const auto piece = board[i][j];
+            if (Pieces::getColor(piece) == turn && Pieces::getType(piece) == PIECE_KING)
             {
-                auto piece = board[i][j];
-                if (Pieces::getColor(piece) == turn && Pieces::getType(piece) == PIECE_KING)
+                kingPosition = {j, i};
+                break;
+            }
+        }
+    }
+    
+    for (const auto& move : pseudolegalMoves)
+    {
+        bool isLegal = true;
+        
+        // If the king moves, check if it walks into an attacked piece
+        if (Pieces::getType(board[move[0][1]][move[0][0]]) == PIECE_KING)
+        {
+            const auto movesOpponent = pseudolegalMoveGenerator(boardCopy, legalCastles, enpassantSquare, otherTurn);
+            
+            for (const auto& opponentMove : movesOpponent)
+            {
+                if (opponentMove[1][0] == move[1][0] && opponentMove[1][1] == move[1][1])
                 {
-                    kingPosition = std::vector<int>{j, i};
+                    isLegal = false;
+                    break;
+                }
+            }
+            
+            // Check if we can castle
+            if (move[0][0] == 4 /* e file */)
+            {
+                const int castlingRank = (turn == COLOR_WHITE) ? 0 : 7;
+                
+                if (move[1][0] == 6 /* g file */)
+                {
+                    for (const auto& opponentMove : movesOpponent)
+                    {
+                        if (opponentMove[1][0] == 4 && opponentMove[1][1] == castlingRank ||
+                            opponentMove[1][0] == 5 && opponentMove[1][1] == castlingRank ||
+                            opponentMove[1][0] == 6 && opponentMove[1][1] == castlingRank)
+                        {
+                            isLegal = false;
+                            break;
+                        }
+                    }
+                }
+                else if (move[1][0] == 2 /* c file */)
+                {
+                    for (const auto& opponentMove : movesOpponent)
+                    {
+                        if (opponentMove[1][0] == 4 && opponentMove[1][1] == castlingRank ||
+                            opponentMove[1][0] == 3 && opponentMove[1][1] == castlingRank ||
+                            opponentMove[1][0] == 2 && opponentMove[1][1] == castlingRank)
+                        {
+                            isLegal = false;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            std::vector<std::vector<char>> boardCopy = board;
+            std::swap(boardCopy[move[0][1]][move[0][0]], boardCopy[move[1][1]][move[1][0]]);
+            const auto movesOpponent = pseudolegalMoveGenerator(boardCopy, legalCastles, enpassantSquare, true);
+            
+            for (const auto& opponentMove : movesOpponent)
+            {
+                if (opponentMove[1][0] == kingPosition[0] && opponentMove[1][1] == kingPosition[1])
+                {
+                    isLegal = false;
                     break;
                 }
             }
         }
-        for (auto move : pseudolegalMoves)
+        
+        if (isLegal)
         {
-            bool isLegal = true;
-            // If the king moves, we need to check if we walk into an attacked piece
-            if (Pieces::getType(board[move[0][1]][move[0][0]]) == PIECE_KING)
-            {
-                auto movesOpponent = pseudolegalMoveGenerator(board, legalCastles, enpassantSquare, otherTurn);
-                for (auto opponentMove : movesOpponent)
-                {
-                    if (opponentMove[1][0] == move[1][0] && opponentMove[1][1] == move[1][1])
-                    {
-                        isLegal = false;
-                        break;
-                    }
-                }
-                // Check if we can castle
-                // Kingside castle
-                if (move[0][0] == 4 /* e file*/ && move[1][0] == 6 /** g file */)
-                {
-                    for (auto opponentMove : movesOpponent)
-                    {
-                        if ((opponentMove[1][0] == move[0][0] && opponentMove[1][1] == move[0][1]) || (opponentMove[1][0] == move[0][0] + 1 && opponentMove[1][1] == move[0][1]) || (opponentMove[1][0] == move[0][0] + 2 && opponentMove[1][1] == move[0][1]))
-                        {
-                            isLegal = false;
-                            break;
-                        }
-                    }
-                }
-                // Queenside castle
-                if (move[0][0] == 4 /* e file */ && move[1][0] == 2 /* c file */)
-                {
-                    for (auto opponentMove : movesOpponent)
-                    {
-                        if ((opponentMove[1][0] == move[0][0] && opponentMove[1][1] == move[0][1]) || (opponentMove[1][0] == move[0][0] - 1 && opponentMove[1][1] == move[0][1]) || (opponentMove[1][0] == move[0][0] - 2 && opponentMove[1][1] == move[0][1]) || (opponentMove[1][0] == move[0][0] - 3 && opponentMove[1][1] == move[0][1]))
-                        {
-                            isLegal = false;
-                            break;
-                        }
-                    }
-                }
-            }
-            else
-            {
-                auto boardCopy = board;
-                boardCopy[move[1][1]][move[1][0]] = boardCopy[move[0][1]][move[0][0]];
-                boardCopy[move[0][1]][move[0][0]] = Pieces::generatePiece(PIECE_NONE, COLOR_NONE);
-                auto movesOpponent = pseudolegalMoveGenerator(boardCopy, legalCastles, enpassantSquare, otherTurn);
-                for (auto opponentMove : movesOpponent)
-                {
-                    if (opponentMove[1][0] == kingPosition[0] && opponentMove[1][1] == kingPosition[1])
-                    {
-                        isLegal = false;
-                        break;
-                    }
-                }
-            }
-
-            if (isLegal)
-            {
-                result.push_back(move);
-            }
+            result.push_back(move);
         }
-        return result;
-    };
+    }
+    
+    return result;
+}
+
 
 }
