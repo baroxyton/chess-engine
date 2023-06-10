@@ -11,41 +11,27 @@
 #define PIECE_QUEEN 4
 #define PIECE_KING 5
 
+#define WHITE_KING 'K'
+#define WHITE_QUEEN 'Q'
+#define WHITE_ROOK 'R'
+#define WHITE_BISHOP 'B'
+#define WHITE_KNIGHT 'N'
+#define WHITE_PAWN 'P'
+
+#define BLACK_KING 'k'
+#define BLACK_QUEEN 'q'
+#define BLACK_ROOK 'r'
+#define BLACK_BISHOP 'b'
+#define BLACK_KNIGHT 'n'
+#define BLACK_PAWN 'p'
+
+#define EMPTY_SQUARE ' '
+
 #include <string>
-namespace Pieces{
-	class Piece{
-		public:
-		Piece();
-		int color;
-		int pieceType;
-		int pieceValue;
-	};
-	class Pawn : public Piece{
-		public:
-			Pawn(int color);
-	};
-	class Bishop : public Piece{
-		public:
-			Bishop(int color);
-	}; 
-	class Knight : public Piece{
-		public:
-			Knight(int color);
-	}; 
-	class Rook : public Piece{
-		public:
-			Rook(int color);
-	};
-	class Queen : public Piece{
-		public:
-			Queen(int color);
-	};
-	class King : public Piece{
-		public:
-			King(int color);
-	};
-	class EmptySquare : public Piece{
-		public:
-		EmptySquare();
-	};
+namespace Pieces
+{
+	char generatePiece(int type, int color);
+	int getColor(char piece);
+	int getType(char piece);
+	int getValue(char piece);
 }

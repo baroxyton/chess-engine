@@ -16,15 +16,20 @@ Board::Board(std::string fen)
 	enpassantSquare = parsedBoard.enpassantSquare;
 	numRepetitions = parsedBoard.numRepetitions;
 	toPlay = parsedBoard.toPlay;
-
 	auto valid_moves = MoveGenerator::legalMoveGenerator(boardContent, legalCastles, enpassantSquare, toPlay);
+	// Current performance: ~5000 moves per second (legal move, start position)
+	// ~200'000 moves per second (pseudo-legal move)
+	for (int i = 0; i < 100000; i++)
+	{
+		valid_moves = MoveGenerator::pseudolegalMoveGenerator(boardContent, legalCastles, enpassantSquare, toPlay);
+	}
 	std::cout << "NUM LEGAL MOVES: " << valid_moves.size() << std::endl;
-	for(auto move : valid_moves){
+	for (auto move : valid_moves)
+	{
 		std::cout << Utils::squareToStr(move[0]) << " TO " << Utils::squareToStr(move[1]) << std::endl;
 	}
-
 };
-Board::Board() : Board("3rrr2/8/8/7B/8/8/r7/4K3 w - - 0 1") {}
+Board::Board() : Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1") {}
 int main()
 {
 	Board();

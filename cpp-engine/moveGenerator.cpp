@@ -4,7 +4,7 @@
 namespace MoveGenerator
 {
     // list[rank, file, (promotion)]
-    std::vector<std::vector<std::vector<int>>> pseudolegalMoveGenerator(std::vector<std::vector<Pieces::Piece *>> &board, std::vector<int> legalCastles, std::vector<int> enpassantSquare, int turn)
+    std::vector<std::vector<std::vector<int>>> pseudolegalMoveGenerator(std::vector<std::vector<char>> &board, std::vector<int> legalCastles, std::vector<int> enpassantSquare, int turn)
     {
         std::vector<std::vector<std::vector<int>>> result;
         // Loop through ranks
@@ -15,17 +15,17 @@ namespace MoveGenerator
             {
                 auto piece = board[i][j];
                 // Empty square
-                if (piece->pieceType == PIECE_NONE)
+                if (Pieces::getType(piece) == PIECE_NONE)
                 {
                     continue;
                 }
-                auto pieceColor = piece->color;
+                auto pieceColor = Pieces::getColor(piece);
                 if (pieceColor != turn)
                 {
                     continue;
                 }
                 // Pawn
-                if (piece->pieceType == PIECE_PAWN)
+                if (Pieces::getType(piece) == PIECE_PAWN)
                 {
                     int direction = 1;
                     bool isPromotion = (i == 6 && pieceColor == COLOR_WHITE) || (i == 1 && pieceColor == COLOR_BLACK);
@@ -37,31 +37,31 @@ namespace MoveGenerator
                     }
 
                     // Single move forward
-                    if (board[i + direction][j]->pieceType == PIECE_NONE)
+                    if (Pieces::getType(board[i + direction][j]) == PIECE_NONE)
                     {
                         result.push_back(std::vector<std::vector<int>>{std::vector<int>{j, i}, std::vector<int>{j, i + direction, promotion}});
 
                         // Double move from starting position
-                        if (doubleMove && board[i + 2 * direction][j]->pieceType == PIECE_NONE)
+                        if (doubleMove && Pieces::getType(board[i + 2 * direction][j]) == PIECE_NONE)
                         {
                             result.push_back(std::vector<std::vector<int>>{std::vector<int>{j, i}, std::vector<int>{j, i + 2 * direction, promotion}});
                         }
                     }
 
                     // Capture diagonally
-                    if (j != 0 && board[i + direction][j - 1]->color != COLOR_NONE && board[i + direction][j - 1]->color != pieceColor)
+                    if (j != 0 && Pieces::getColor(board[i + direction][j - 1]) != COLOR_NONE && Pieces::getColor(board[i + direction][j - 1]) != pieceColor)
                     {
                         result.push_back(std::vector<std::vector<int>>{std::vector<int>{i, j}, std::vector<int>{j - 1, i + direction, promotion}});
                     }
 
-                    if (j != 7 && board[i + direction][j + 1]->color != COLOR_NONE && board[i + direction][j + 1]->color != pieceColor)
+                    if (j != 7 && Pieces::getColor(board[i + direction][j + 1]) != COLOR_NONE && Pieces::getColor(board[i + direction][j + 1]) != pieceColor)
                     {
                         result.push_back(std::vector<std::vector<int>>{std::vector<int>{i, j}, std::vector<int>{j + 1, i + direction, promotion}});
                     }
                 }
 
                 // Knight
-                if (piece->pieceType == PIECE_KNIGHT)
+                if (Pieces::getType(piece) == PIECE_KNIGHT)
                 {
                     std::vector<std::pair<int, int>> knightMoves = {
                         {2, 1}, {1, 2}, {-1, 2}, {-2, 1}, {-2, -1}, {-1, -2}, {1, -2}, {2, -1}};
@@ -73,7 +73,7 @@ namespace MoveGenerator
 
                         if (x >= 0 && x < 8 && y >= 0 && y < 8)
                         {
-                            if (board[x][y]->color == pieceColor)
+                            if (Pieces::getColor(board[x][y]) == pieceColor)
                             {
                                 continue; // Skip if the target square contains a friendly piece
                             }
@@ -85,7 +85,7 @@ namespace MoveGenerator
                     }
                 }
                 // Bishop
-                if (piece->pieceType == PIECE_BISHOP)
+                if (Pieces::getType(piece) == PIECE_BISHOP)
                 {
                     std::vector<std::pair<int, int>> bishopDirections = {
                         {1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
@@ -99,7 +99,7 @@ namespace MoveGenerator
 
                         while (x >= 0 && x < 8 && y >= 0 && y < 8)
                         {
-                            if (board[x][y]->color == pieceColor)
+                            if (Pieces::getColor(board[x][y]) == pieceColor)
                             {
                                 break; // Stop if the target square contains a friendly piece
                             }
@@ -108,7 +108,7 @@ namespace MoveGenerator
                                 std::vector<int>{j, i},
                                 std::vector<int>{y, x, 0}});
 
-                            if (board[x][y]->color != COLOR_NONE)
+                            if (Pieces::getColor(board[x][y]) != COLOR_NONE)
                             {
                                 break; // Stop if the target square contains an opponent's piece
                             }
@@ -119,7 +119,7 @@ namespace MoveGenerator
                     }
                 }
                 // Rook
-                if (piece->pieceType == PIECE_ROOK)
+                if (Pieces::getType(piece) == PIECE_ROOK)
                 {
                     std::vector<std::pair<int, int>> rookDirections = {
                         {1, 0}, {-1, 0}, {0, 1}, {0, -1}};
@@ -133,7 +133,7 @@ namespace MoveGenerator
 
                         while (x >= 0 && x < 8 && y >= 0 && y < 8)
                         {
-                            if (board[x][y]->color == pieceColor)
+                            if (Pieces::getColor(board[x][y]) == pieceColor)
                             {
                                 break; // Stop if the target square contains a friendly piece
                             }
@@ -142,7 +142,7 @@ namespace MoveGenerator
                                 std::vector<int>{j, i},
                                 std::vector<int>{y, x, 0}});
 
-                            if (board[x][y]->color != COLOR_NONE)
+                            if (Pieces::getColor(board[x][y]) != COLOR_NONE)
                             {
                                 break; // Stop if the target square contains an opponent's piece
                             }
@@ -153,7 +153,7 @@ namespace MoveGenerator
                     }
                 }
                 // Queen
-                if (piece->pieceType == PIECE_QUEEN)
+                if (Pieces::getType(piece) == PIECE_QUEEN)
                 {
                     std::vector<std::pair<int, int>> queenDirections = {
                         {1, 0}, {-1, 0}, {0, 1}, {0, -1}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
@@ -167,7 +167,7 @@ namespace MoveGenerator
 
                         while (x >= 0 && x < 8 && y >= 0 && y < 8)
                         {
-                            if (board[x][y]->color == pieceColor)
+                            if (Pieces::getColor(board[x][y]) == pieceColor)
                             {
                                 break; // Stop if the target square contains a friendly piece
                             }
@@ -176,7 +176,7 @@ namespace MoveGenerator
                                 std::vector<int>{j, i},
                                 std::vector<int>{y, x, 0}});
 
-                            if (board[x][y]->color != COLOR_NONE)
+                            if (Pieces::getColor(board[x][y]) != COLOR_NONE)
                             {
                                 break; // Stop if the target square contains an opponent's piece
                             }
@@ -187,7 +187,7 @@ namespace MoveGenerator
                     }
                 }
                 // King
-                if (piece->pieceType == PIECE_KING)
+                if (Pieces::getType(piece) == PIECE_KING)
                 {
                     std::vector<std::pair<int, int>> kingMoves = {
                         {1, 0}, {-1, 0}, {0, 1}, {0, -1}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
@@ -199,7 +199,7 @@ namespace MoveGenerator
 
                         if (x >= 0 && x < 8 && y >= 0 && y < 8)
                         {
-                            if (board[x][y]->color == pieceColor)
+                            if (Pieces::getColor(board[x][y]) == pieceColor)
                             {
                                 continue; // Skip if the target square contains a friendly piece
                             }
@@ -210,22 +210,22 @@ namespace MoveGenerator
                         }
                     }
                     // White kingside castle
-                    if (pieceColor == COLOR_WHITE && legalCastles[0] == 1 && board[i][j + 1]->pieceType == PIECE_NONE && board[i][j + 2]->pieceType == PIECE_NONE)
+                    if (pieceColor == COLOR_WHITE && legalCastles[0] == 1 && Pieces::getType(board[i][j + 1]) == PIECE_NONE && Pieces::getType(board[i][j + 2]) == PIECE_NONE)
                     {
                         result.push_back(std::vector<std::vector<int>>{std::vector<int>{j, i}, std::vector<int>{j + 2, i}});
                     }
                     // White queenside castle
-                    if (pieceColor == COLOR_WHITE && legalCastles[1] == 1 && board[i][j - 1]->pieceType == PIECE_NONE && board[i][j - 2]->pieceType == PIECE_NONE && board[i][j - 3]->pieceType == PIECE_NONE)
+                    if (pieceColor == COLOR_WHITE && legalCastles[1] == 1 && Pieces::getType(board[i][j - 1]) == PIECE_NONE && Pieces::getType(board[i][j - 2]) == PIECE_NONE && Pieces::getType(board[i][j - 3]) == PIECE_NONE)
                     {
                         result.push_back(std::vector<std::vector<int>>{std::vector<int>{j, i}, std::vector<int>{j - 2, i}});
                     }
                     // Black kingside castle
-                    if (pieceColor == COLOR_BLACK && legalCastles[2] == 1 && board[i][j + 1]->pieceType == PIECE_NONE && board[i][j + 2]->pieceType == PIECE_NONE)
+                    if (pieceColor == COLOR_BLACK && legalCastles[2] == 1 && Pieces::getType(board[i][j + 1]) == PIECE_NONE && Pieces::getType(board[i][j + 2]) == PIECE_NONE)
                     {
                         result.push_back(std::vector<std::vector<int>>{std::vector<int>{j, i}, std::vector<int>{j + 2, i}});
                     }
                     // Black queenside castle
-                    if (pieceColor == COLOR_BLACK && legalCastles[3] == 1 && board[i][j - 1]->pieceType == PIECE_NONE && board[i][j - 2]->pieceType == PIECE_NONE && board[i][j - 3]->pieceType == PIECE_NONE)
+                    if (pieceColor == COLOR_BLACK && legalCastles[3] == 1 && Pieces::getType(board[i][j - 1]) == PIECE_NONE && Pieces::getType(board[i][j - 2]) == PIECE_NONE && Pieces::getType(board[i][j - 3]) == PIECE_NONE)
                     {
                         result.push_back(std::vector<std::vector<int>>{std::vector<int>{j, i}, std::vector<int>{j - 2, i}});
                     }
@@ -235,7 +235,7 @@ namespace MoveGenerator
         return result;
     }
     // Filter illegal moves that allow the capture of the king
-    std::vector<std::vector<std::vector<int>>> legalMoveGenerator(std::vector<std::vector<Pieces::Piece *>> board, std::vector<int> legalCastles, std::vector<int> enpassantSquare, int turn)
+    std::vector<std::vector<std::vector<int>>> legalMoveGenerator(std::vector<std::vector<char>> board, std::vector<int> legalCastles, std::vector<int> enpassantSquare, int turn)
     {
         std::vector<std::vector<std::vector<int>>> result;
         auto pseudolegalMoves = pseudolegalMoveGenerator(board, legalCastles, enpassantSquare, turn);
@@ -246,7 +246,7 @@ namespace MoveGenerator
             for (int j = 0; j < 8; j++)
             {
                 auto piece = board[i][j];
-                if (piece->color == turn && piece->pieceType == PIECE_KING)
+                if (Pieces::getColor(piece) == turn && Pieces::getType(piece) == PIECE_KING)
                 {
                     kingPosition = std::vector<int>{j, i};
                     break;
@@ -257,7 +257,7 @@ namespace MoveGenerator
         {
             bool isLegal = true;
             // If the king moves, we need to check if we walk into an attacked piece
-            if (board[move[0][1]][move[0][0]]->pieceType == PIECE_KING)
+            if (Pieces::getType(board[move[0][1]][move[0][0]]) == PIECE_KING)
             {
                 auto movesOpponent = pseudolegalMoveGenerator(board, legalCastles, enpassantSquare, otherTurn);
                 for (auto opponentMove : movesOpponent)
@@ -298,7 +298,7 @@ namespace MoveGenerator
             {
                 auto boardCopy = board;
                 boardCopy[move[1][1]][move[1][0]] = boardCopy[move[0][1]][move[0][0]];
-                boardCopy[move[0][1]][move[0][0]] = new Pieces::EmptySquare{};
+                boardCopy[move[0][1]][move[0][0]] = Pieces::generatePiece(PIECE_NONE, COLOR_NONE);
                 auto movesOpponent = pseudolegalMoveGenerator(boardCopy, legalCastles, enpassantSquare, otherTurn);
                 for (auto opponentMove : movesOpponent)
                 {

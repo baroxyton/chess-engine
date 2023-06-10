@@ -1,46 +1,106 @@
 #include "pieces.h"
-namespace Pieces{
-		Piece::Piece() : pieceType(-1), color(-1), pieceValue(-1) {};
-		
-		Pawn::Pawn(int color){
-			this->color = color;
-			pieceType=0;
-			pieceValue = 1;
+namespace Pieces
+{
+	char generatePiece(int type, int color)
+	{
+		bool isWhite = (color == COLOR_WHITE);
+		switch (type)
+		{
+		case PIECE_PAWN:
+			return isWhite ? WHITE_PAWN : BLACK_PAWN;
+			break;
+		case PIECE_KNIGHT:
+			return isWhite ? WHITE_KNIGHT : BLACK_KNIGHT;
+			break;
+		case PIECE_BISHOP:
+			return isWhite ? WHITE_BISHOP : BLACK_BISHOP;
+			break;
+		case PIECE_ROOK:
+			return isWhite ? WHITE_ROOK : BLACK_ROOK;
+			break;
+		case PIECE_QUEEN:
+			return isWhite ? WHITE_QUEEN : BLACK_QUEEN;
+			break;
+		case PIECE_KING:
+			return isWhite ? WHITE_KING : BLACK_KING;
+			break;
+		default:
+			return EMPTY_SQUARE;
 		}
-
-		Knight::Knight(int color){
-			this->color = color;
-			pieceType=1;
-			pieceValue = 3;
+	};
+	int getColor(char piece)
+	{
+		switch (piece)
+		{
+		case WHITE_PAWN:
+		case WHITE_KNIGHT:
+		case WHITE_BISHOP:
+		case WHITE_ROOK:
+		case WHITE_QUEEN:
+		case WHITE_KING:
+			return COLOR_WHITE;
+			break;
+		case BLACK_PAWN:
+		case BLACK_KNIGHT:
+		case BLACK_BISHOP:
+		case BLACK_ROOK:
+		case BLACK_QUEEN:
+		case BLACK_KING:
+			return COLOR_BLACK;
+			break;
+		default:
+			return COLOR_NONE;
 		}
-		
-		Bishop::Bishop(int color){
-			this->color = color;
-			pieceType=2;
-			pieceValue = 3.25;
+	}
+	int getType(char piece)
+	{
+		switch (piece)
+		{
+		case WHITE_PAWN:
+		case BLACK_PAWN:
+			return PIECE_PAWN;
+			break;
+		case WHITE_KNIGHT:
+		case BLACK_KNIGHT:
+			return PIECE_KNIGHT;
+			break;
+		case WHITE_BISHOP:
+		case BLACK_BISHOP:
+			return PIECE_BISHOP;
+			break;
+		case WHITE_ROOK:
+		case BLACK_ROOK:
+			return PIECE_ROOK;
+			break;
+		case WHITE_QUEEN:
+		case BLACK_QUEEN:
+			return PIECE_QUEEN;
+			break;
+		case WHITE_KING:
+		case BLACK_KING:
+			return PIECE_KING;
+			break;
+		default:
+			return PIECE_NONE;
 		}
-
-		Rook::Rook(int color){
-			this->color = color;
-			pieceType=3;
-			pieceValue = 5;
+	}
+	int getValue(char piece)
+	{
+		int pieceType = getType(piece);
+		switch (piece)
+		{
+		case PIECE_PAWN:
+			return 1;
+		case PIECE_KNIGHT:
+			return 3;
+		case PIECE_BISHOP:
+			return 3.25;
+		case PIECE_ROOK:
+			return 5;
+		case PIECE_QUEEN:
+			return 9.5;
+		default:
+			return -1;
 		}
-
-		Queen::Queen(int color){
-			this->color = color;
-			pieceType=4;
-			pieceValue = 9;
-		}
-		
-		King::King(int color){
-			this->color = color;
-			pieceType=5;
-			pieceValue = 0;
-		}
-
-		EmptySquare::EmptySquare(){
-			pieceType = -1;
-			color = -1;
-			pieceValue = -1;
-		};
+	}
 }

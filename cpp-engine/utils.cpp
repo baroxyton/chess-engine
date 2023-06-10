@@ -6,7 +6,7 @@
 #include <algorithm>
 namespace Utils
 {
-	Pieces::Piece *letterToPiece(std::string letter)
+	char letterToPiece(std::string letter)
 	{
 		int color = COLOR_WHITE;
 		std::string lowerLetter = letter;
@@ -17,33 +17,33 @@ namespace Utils
 		}
 		if (lowerLetter == "p")
 		{
-			return new Pieces::Pawn{color};
+			return Pieces::generatePiece(PIECE_PAWN, color);
 		}
 		else if (lowerLetter == "n")
 		{
-			return new Pieces::Knight{color};
+			return Pieces::generatePiece(PIECE_KNIGHT, color);
 		}
 		else if (lowerLetter == "b")
 		{
-			return new Pieces::Bishop{color};
+			return Pieces::generatePiece(PIECE_BISHOP, color);
 		}
 		else if (lowerLetter == "r")
 		{
-			return new Pieces::Rook{color};
+			return Pieces::generatePiece(PIECE_ROOK, color);
 		}
 		else if (lowerLetter == "q")
 		{
 
-			return new Pieces::Queen{color};
+			return Pieces::generatePiece(PIECE_QUEEN, color);
 		}
 		else if (lowerLetter == "k")
 		{
 
-			return new Pieces::King{color};
+			return Pieces::generatePiece(PIECE_KING, color);
 		}
 		else
 		{
-			return new Pieces::EmptySquare{};
+			return Pieces::generatePiece(PIECE_NONE, color);
 		}
 	}
 
@@ -63,7 +63,7 @@ namespace Utils
 		std::vector<std::string> splitFen;
 		boost::split(splitFen, fen, boost::is_any_of(" "));
 
-		std::vector<std::vector<Pieces::Piece *>> boardPosition;
+		std::vector<std::vector<char>> boardPosition;
 		int whoseTurn;
 		std::vector<int> availableCastles = std::vector<int>{0, 0, 0, 0};
 
@@ -72,19 +72,19 @@ namespace Utils
 		boost::split(ranks, splitFen[0], boost::is_any_of("/"));
 		for (int i = 0; i < ranks.size(); i++)
 		{
-			std::vector<Pieces::Piece *> rank;
+			std::vector<char> rank;
 			for (auto letter : ranks[i])
 			{
 				if (atoi((std::string{letter}).c_str()))
 				{
 					for (int j = 0; j < atoi((std::string{letter}).c_str()); j++)
 					{
-						rank.push_back((Pieces::Piece *)new Pieces::EmptySquare());
+						rank.push_back(Pieces::generatePiece(PIECE_NONE, COLOR_NONE));
 					}
 				}
 				else
 				{
-					rank.push_back((Pieces::Piece *)Utils::letterToPiece(std::string{letter}));
+					rank.push_back(Utils::letterToPiece(std::string{letter}));
 				}
 			}
 			boardPosition.push_back(rank);
@@ -151,10 +151,11 @@ namespace Utils
 		return result;
 	}
 
-	std::string squareToStr(std::vector<int> square){
+	std::string squareToStr(std::vector<int> square)
+	{
 		std::string result;
 		std::string file = (std::vector<std::string>{"a", "b", "c", "d", "e", "f", "g", "h"})[square[0]];
-		int rank = square[1]+1;
+		int rank = square[1] + 1;
 
 		return file + std::to_string(rank);
 	}

@@ -7,7 +7,7 @@ class Board{
 	public:
 		Board(std::string fen);
 		Board();
-		std::vector<std::vector<Pieces::Piece*>> boardContent;
+		std::vector<std::vector<char>> boardContent;
 		bool makeMove(std::string);
 		bool moveIsLegal(std::string);
 		std::vector<int> legalCastles;
