@@ -186,6 +186,50 @@ namespace MoveGenerator
                         }
                     }
                 }
+                // King
+                if (piece->pieceType == PIECE_KING)
+                {
+                    std::vector<std::pair<int, int>> kingMoves = {
+                        {1, 0}, {-1, 0}, {0, 1}, {0, -1}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
+
+                    for (const auto &move : kingMoves)
+                    {
+                        int x = i + move.first;
+                        int y = j + move.second;
+
+                        if (x >= 0 && x < 8 && y >= 0 && y < 8)
+                        {
+                            if (board[x][y]->color == pieceColor)
+                            {
+                                continue; // Skip if the target square contains a friendly piece
+                            }
+
+                            result.push_back(std::vector<std::vector<int>>{
+                                std::vector<int>{j, i},
+                                std::vector<int>{y, x, 0}});
+                        }
+                    }
+                    // White kingside castle
+                    if (pieceColor == COLOR_WHITE && legalCastles[0] == 1 && board[i][j + 1]->pieceType == PIECE_NONE && board[i][j + 2]->pieceType == PIECE_NONE)
+                    {
+                        result.push_back(std::vector<std::vector<int>>{std::vector<int>{j, i}, std::vector<int>{j + 2, i}});
+                    }
+                    // White queenside castle
+                    if (pieceColor == COLOR_WHITE && legalCastles[1] == 1 && board[i][j - 1]->pieceType == PIECE_NONE && board[i][j - 2]->pieceType == PIECE_NONE && board[i][j - 3]->pieceType == PIECE_NONE)
+                    {
+                        result.push_back(std::vector<std::vector<int>>{std::vector<int>{j, i}, std::vector<int>{j - 2, i}});
+                    }
+                    // Black kingside castle
+                    if (pieceColor == COLOR_BLACK && legalCastles[2] == 1 && board[i][j + 1]->pieceType == PIECE_NONE && board[i][j + 2]->pieceType == PIECE_NONE)
+                    {
+                        result.push_back(std::vector<std::vector<int>>{std::vector<int>{j, i}, std::vector<int>{j + 2, i}});
+                    }
+                    // Black queenside castle
+                    if (pieceColor == COLOR_BLACK && legalCastles[3] == 1 && board[i][j - 1]->pieceType == PIECE_NONE && board[i][j - 2]->pieceType == PIECE_NONE && board[i][j - 3]->pieceType == PIECE_NONE)
+                    {
+                        result.push_back(std::vector<std::vector<int>>{std::vector<int>{j, i}, std::vector<int>{j - 2, i}});
+                    }
+                }
             }
         }
         return result;
