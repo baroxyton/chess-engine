@@ -50,7 +50,7 @@ namespace Utils
 	std::vector<int> fileAndRank(std::string square)
 	{
 		int file = square[0] - 'a';
-		int rank = atoi(std::string{square[1]}.c_str());
+		int rank = atoi(std::string{square[1]}.c_str()) - 1;
 
 		return std::vector<int>{file, rank};
 	}
@@ -153,6 +153,9 @@ namespace Utils
 
 	std::string squareToStr(std::vector<int> square)
 	{
+		if(square.size() < 2){
+			return "";
+		}
 		std::string result;
 		std::string file = (std::vector<std::string>{"a", "b", "c", "d", "e", "f", "g", "h"})[square[0]];
 		int rank = square[1] + 1;

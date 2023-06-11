@@ -48,15 +48,15 @@ namespace MoveGenerator
                         }
                     }
 
-                    // Capture diagonally
-                    if (j != 0 && Pieces::getColor(board[i + direction][j - 1]) != COLOR_NONE && Pieces::getColor(board[i + direction][j - 1]) != pieceColor)
+                    // Capture diagonally & en passant
+                    if (j != 0 && ((Pieces::getColor(board[i + direction][j - 1]) != COLOR_NONE && Pieces::getColor(board[i + direction][j - 1]) != pieceColor)||enpassantSquare.size() != 0 && enpassantSquare[0] == j - 1 && enpassantSquare[1] == i + direction))
                     {
-                        result.push_back(std::vector<std::vector<int>>{std::vector<int>{i, j}, std::vector<int>{j - 1, i + direction, promotion}});
+                        result.push_back(std::vector<std::vector<int>>{std::vector<int>{j, i}, std::vector<int>{j - 1, i + direction, promotion}});
                     }
 
-                    if (j != 7 && Pieces::getColor(board[i + direction][j + 1]) != COLOR_NONE && Pieces::getColor(board[i + direction][j + 1]) != pieceColor)
+                    if (j != 7 && ((Pieces::getColor(board[i + direction][j + 1]) != COLOR_NONE && Pieces::getColor(board[i + direction][j + 1]) != pieceColor)||enpassantSquare.size() != 0 && enpassantSquare[0] == j + 1 && enpassantSquare[1] == i + direction))
                     {
-                        result.push_back(std::vector<std::vector<int>>{std::vector<int>{i, j}, std::vector<int>{j + 1, i + direction, promotion}});
+                        result.push_back(std::vector<std::vector<int>>{std::vector<int>{j, i}, std::vector<int>{j + 1, i + direction, promotion}});
                     }
                 }
 
