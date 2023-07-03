@@ -4,7 +4,7 @@
 namespace MoveGenerator
 {
     // list[rank, file, (promotion)]
-    std::vector<std::vector<std::vector<int>>> pseudolegalMoveGenerator(std::vector<std::vector<char>>& board, std::vector<int> legalCastles, std::vector<int> enpassantSquare, int turn, bool rangePiecesOnly=false)
+    std::vector<std::vector<std::vector<int>>> pseudolegalMoveGenerator(std::vector<std::vector<char>>& board, std::vector<int> legalCastles, std::vector<int> enpassantSquare, int turn, bool rangePiecesOnly=false, bool ignoreTurn=false)
     {
         std::vector<std::vector<std::vector<int>>> result;
         // Loop through ranks
@@ -20,7 +20,7 @@ namespace MoveGenerator
                     continue;
                 }
                 auto pieceColor = Pieces::getColor(piece);
-                if (pieceColor != turn)
+                if (pieceColor != turn && !ignoreTurn)
                 {
                     continue;
                 }
