@@ -87,7 +87,7 @@ namespace Pieces
 	int getValue(char piece)
 	{
 		int pieceType = getType(piece);
-		switch (piece)
+		switch (pieceType)
 		{
 		case PIECE_PAWN:
 			return 1;
@@ -99,6 +99,8 @@ namespace Pieces
 			return 5;
 		case PIECE_QUEEN:
 			return 9.5;
+		case PIECE_KING:
+			return 0;
 		default:
 			return -1;
 		}

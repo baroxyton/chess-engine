@@ -2,12 +2,14 @@
 #include "utils.h"
 #include "pieces.h"
 #include "moveGenerator.h"
+#include <math.h>
+#include <iostream>
 
 // Returns value in centipawns
 // Evaluate for white
 int Analysis::staticEvaluate(std::vector<std::vector<char>> parsedBoard)
 {
-    auto pseudolegalMoves = MoveGenerator::pseudolegalMoveGenerator(parsedBoard, std::vector<int>{}, std::vector<int>{}, false, true);
+    auto pseudolegalMoves = MoveGenerator::pseudolegalMoveGenerator(parsedBoard, std::vector<int>{0, 0, 0, 0}, std::vector<int>{}, COLOR_WHITE, false, true);
     int evaluation = 0;
     for (int i = 0; i < parsedBoard.size(); i++)
     {
@@ -20,7 +22,7 @@ int Analysis::staticEvaluate(std::vector<std::vector<char>> parsedBoard)
             auto pieceColor = Pieces::getColor(piece);
             auto pieceValue = Pieces::getValue(piece);
 
-            if(pieceType == EMPTY_SQUARE){
+            if(pieceType == PIECE_NONE){
                 continue;
             }
 
@@ -28,8 +30,7 @@ int Analysis::staticEvaluate(std::vector<std::vector<char>> parsedBoard)
             int positiveEval = (pieceColor == COLOR_WHITE)?1:-1;
 
             evaluation += pieceValue * positiveEval * 100;
-
-            if(pieceType == PIECE_BISHOP){
+            if(pieceType == PIECE_BISHOP||pieceType == PIECE_QUEEN){
                 int numMoves = 0;
                 
                 for(auto move : pseudolegalMoves){

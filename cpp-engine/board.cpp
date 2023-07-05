@@ -6,6 +6,7 @@
 #include <iostream>
 #include <boost/algorithm/string.hpp>
 #include "moveGenerator.h"
+#include "staticeval.h"
 
 Board::Board(std::string fen)
 {
@@ -16,7 +17,7 @@ Board::Board(std::string fen)
 	enpassantSquare = parsedBoard.enpassantSquare;
 	numRepetitions = parsedBoard.numRepetitions;
 	toPlay = parsedBoard.toPlay;
-	auto valid_moves = MoveGenerator::legalMoveGenerator(boardContent, legalCastles, enpassantSquare, toPlay);
+	auto valid_moves = MoveGenerator::pseudolegalMoveGenerator(boardContent, legalCastles, enpassantSquare, toPlay, false, true);
 	/*
 	// Current performance: ~8500 moves per second (legal move, start position)
 	// ~200'000 moves per second (pseudo-legal move, start position)
@@ -31,9 +32,11 @@ Board::Board(std::string fen)
 	{
 		std::cout << Utils::squareToStr(move[0]) << " TO " << Utils::squareToStr(move[1]) << std::endl;
 	}
+		std::cout << "ANALYSIS: " << Analysis::staticEvaluate(boardContent) << std::endl;
+
 };
-Board::Board() : Board("r1bqkbnr/pppp1ppp/n7/4pP2/8/8/PPPPP1PP/RNBQKBNR w KQkq - 0 3") {}
+Board::Board() : Board("r1bqk2r/pppp1ppp/5n2/8/2BQP3/8/PP3PPP/RNB1K2R b KQkq - 0 8") {}
 int main()
 {
-	Board();
+	auto board = Board();
 }
