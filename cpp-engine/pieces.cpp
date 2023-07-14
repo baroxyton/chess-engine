@@ -100,7 +100,7 @@ namespace Pieces
 		case PIECE_QUEEN:
 			return 9.5;
 		case PIECE_KING:
-			return 0;
+			return 1000;
 		default:
 			return -1;
 		}

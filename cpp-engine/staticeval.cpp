@@ -50,5 +50,23 @@ int Analysis::staticEvaluate(std::vector<std::vector<char>> parsedBoard)
             }
         }
     }
+    /*
+    if(evaluation == -1){
+        std::cout << "ERROR";
+        for(auto line : parsedBoard){
+            for(auto piece : line){
+                if(piece == EMPTY_SQUARE){
+                    std::cout << "1";
+                }
+                else{
+                    std::cout << std::vector<std::string>{"pawn", "bishop", "knight", "rook", "queen", "king"}[Pieces::getType(piece)] << " ";
+                }
+                std::cout << "/";
+            }
+            std::cout << std::endl;
+        }
+        std::cout << std::endl;
+    }
+    */
     return evaluation;
 };

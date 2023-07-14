@@ -153,13 +153,68 @@ namespace Utils
 
 	std::string squareToStr(std::vector<int> square)
 	{
-		if(square.size() < 2){
+		if (square.size() < 2)
+		{
 			return "";
 		}
 		std::string result;
+		if (square[0] > 7 || square[0] < 0)
+		{
+			return "";
+		}
 		std::string file = (std::vector<std::string>{"a", "b", "c", "d", "e", "f", "g", "h"})[square[0]];
 		int rank = square[1] + 1;
 
 		return file + std::to_string(rank);
+	}
+	// Does not check if move is legal
+	std::vector<std::vector<char>> boardMove(std::vector<std::vector<char>> &board, std::vector<int> startSquare, std::vector<int> targetSquare)
+	{
+		auto piece = board[startSquare[1]][startSquare[0]];
+		auto pieceType = Pieces::getType(piece);
+		auto pieceColor = Pieces::getType(piece);
+
+		if (pieceType == PIECE_PAWN)
+		{
+			// Check if it's a capture move
+			if (startSquare[0] != targetSquare[0])
+			{
+				// Check if it's a valid en passant move
+				if (board[targetSquare[1]][targetSquare[0]] == EMPTY_SQUARE)
+				{
+					// Remove the captured pawn
+					board[startSquare[1]][targetSquare[0]] = EMPTY_SQUARE;
+					return board;
+				}
+			}
+		}
+
+		if (pieceType == PIECE_KING)
+		{
+			// Short castle
+			if (startSquare[0] == 4 && targetSquare[0] == 6)
+			{
+				board[startSquare[1]][6] = board[startSquare[1]][startSquare[0]];
+				board[startSquare[1]][startSquare[0]] = EMPTY_SQUARE;
+				// Move the rook
+				board[startSquare[1]][5] = board[startSquare[1]][7];
+				board[startSquare[1]][7] = EMPTY_SQUARE;
+				return board;
+			}
+			// Long castle
+			else if (startSquare[0] == 4 && targetSquare[0] == 2)
+			{
+				board[startSquare[1]][2] = board[startSquare[1]][startSquare[0]];
+				board[startSquare[1]][startSquare[0]] = EMPTY_SQUARE;
+				// Move the rook
+				board[startSquare[1]][3] = board[startSquare[1]][0];
+				board[startSquare[1]][0] = EMPTY_SQUARE;
+				return board;
+			}
+		}
+		board[targetSquare[1]][targetSquare[0]] = board[startSquare[1]][startSquare[0]];
+		board[startSquare[1]][startSquare[0]] = EMPTY_SQUARE;
+
+		return board;
 	}
 }

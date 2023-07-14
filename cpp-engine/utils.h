@@ -18,4 +18,5 @@ namespace Utils
 	parsedBoard parseFEN(std::string fen);
 	std::vector<int> fileAndRank(std::string square);
 	std::string squareToStr(std::vector<int> square);
+	std::vector<std::vector<char>> boardMove(std::vector<std::vector<char>> &board, std::vector<int> startSquare, std::vector<int> targetSquare);
 };
